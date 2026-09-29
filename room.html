@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Phòng {{ code }}</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body
+    data-code="{{ code }}"
+    data-player="{{ player_name }}"
+>
+
+
+<div class="game-container">
+
+
+    <!-- HEADER -->
+
+    <header class="game-header">
+
+        <div>
+
+            <h1>🎮 PHÒNG CHƠI</h1>
+
+            <span>
+                Mã phòng:
+                <strong>{{ code }}</strong>
+            </span>
+
+        </div>
+
+        <div id="connection">
+            🟡 Đang kết nối...
+        </div>
+
+    </header>
+
+
+
+    <main class="game-layout">
+
+
+        <!-- KHU VỰC GAME -->
+
+        <section class="main-game">
+
+
+            <!-- PHÒNG CHỜ -->
+
+            <div id="lobby">
+
+                <h2>👥 Phòng chờ</h2>
+
+                <p>
+                    Người chơi trong phòng:
+                </p>
+
+                <div
+                    id="players"
+                    class="players"
+                ></div>
+
+                <button
+                    id="startButton"
+                    class="start-button"
+                    style="display:none;"
+                >
+                    🚀 Bắt đầu game
+                </button>
+
+            </div>
+
+
+
+            <!-- GAME -->
+
+            <div
+                id="game"
+                style="display:none;"
+            >
+
+                <div class="question-info">
+
+                    <span id="questionNumber">
+                        Câu 1/5
+                    </span>
+
+                    <span id="timer">
+                        15
+                    </span>
+
+                </div>
+
+
+                <div class="timer-bar">
+
+                    <div
+                        id="timerBar"
+                        class="timer-progress"
+                    ></div>
+
+                </div>
+
+
+                <h2 id="question">
+                    Câu hỏi
+                </h2>
+
+
+                <div
+                    id="options"
+                    class="options"
+                ></div>
+
+
+                <div id="answerStatus"></div>
+
+            </div>
+
+
+
+            <!-- KẾT QUẢ VÒNG -->
+
+            <div
+                id="roundResult"
+                style="display:none;"
+            >
+
+                <h2>
+                    📊 Kết quả vòng
+                </h2>
+
+                <p id="correctAnswer"></p>
+
+                <div
+                    id="roundLeaderboard"
+                    class="leaderboard"
+                ></div>
+
+            </div>
+
+
+
+            <!-- KẾT THÚC GAME -->
+
+            <div
+                id="gameOver"
+                style="display:none;"
+            >
+
+                <h2>
+                    🏆 GAME KẾT THÚC
+                </h2>
+
+                <div
+                    id="finalLeaderboard"
+                    class="leaderboard"
+                ></div>
+
+
+                <button
+                    id="restartButton"
+                    class="start-button"
+                    style="display:none;"
+                >
+                    🔄 Chơi lại
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- CHAT -->
+
+        <aside class="chat">
+
+            <h2>💬 Chat</h2>
+
+
+            <div
+                id="messages"
+                class="messages"
+            ></div>
+
+
+            <form id="chatForm">
+
+                <input
+                    type="text"
+                    id="chatInput"
+                    placeholder="Nhập tin nhắn..."
+                    maxlength="200"
+                >
+
+                <button type="submit">
+                    Gửi
+                </button>
+
+            </form>
+
+        </aside>
+
+
+    </main>
+
+</div>
+
+
+<script
+    src="https://cdn.socket.io/4.8.1/socket.io.min.js"
+></script>
+
+
+<script
+    src="{{ url_for('static', filename='game.js') }}"
+></script>
+
+
+</body>
+
+</html>
