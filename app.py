@@ -1,10 +1,13 @@
+import csv
+import io
+import requests
 import random
 import string
 import time
 
 from flask import Flask, render_template, request, redirect, url_for
 from flask_socketio import SocketIO, emit, join_room, leave_room
-
+GOOGLE_SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTtkFsbrWhZ1JdrwE5x3PzSBk6XLQYKVgQMyb42Rxtg44WeOooq8aQaKU_hA67P-YPFdWbv8Ys6947t/pub?output=tsv"
 
 app = Flask(__name__)
 
@@ -389,43 +392,51 @@ def start_game(data):
 # =========================================================
 # GỬI CÂU HỎI
 # =========================================================
+def load_questions_from_google():
+    try:
+        response = requests.get(GOOGLE_SHEET_URL, timeout=10)
+        response.raise_for_status()
 
-def send_question(code):
-    if code not in rooms:
-        return
+        text = response.content.decode("utf-8-sig")
+        reader = csv.DictReader(io.StringIO(text))
 
-    room = rooms[code]
+        questions = []
 
-    question = room["questions"][room["question_index"]]
+        for row in reader:
+            question = row["question"].strip()
 
-    shuffled_question = shuffle_question(question)
+            options = [
+                row["A"].strip(),
+                row["B"].strip(),
+                row["C"].strip(),
+                row["D"].strip()
+            ]
 
-    room["current_question"] = shuffled_question
+            answer_text = row["answer"].strip().upper()
 
-    room["started_at"] = time.monotonic()
+            answer_map = {
+                "A": 0,
+                "B": 1,
+                "C": 2,
+                "D": 3
+            }
 
-    for player in room["players"].values():
-        player["answered"] = False
+            if answer_text not in answer_map:
+                continue
 
-    socketio.emit(
-        "game_question",
-        {
-            "question": shuffled_question["question"],
-            "options": shuffled_question["options"],
-            "time": QUESTION_TIME,
-            "question_number": room["question_index"] + 1,
-            "total_questions": len(room["questions"]),
-            "round_id": room["round_id"]
-        },
-        to=code
-    )
+            questions.append({
+                "question": question,
+                "options": options,
+                "answer": answer_map[answer_text]
+            })
 
-    socketio.start_background_task(
-        question_timer,
-        code,
-        room["round_id"]
-    )
-@socketio.on("answer")
+        print(f"Đã tải {len(questions)} câu hỏi từ Google Sheets")
+
+        return questions
+
+    except Exception as e:
+        print("Lỗi đọc Google Sheets:", e)
+        return []
 def answer_question(data):
     code = data.get("code", "").upper()
     answer = data.get("answer")
@@ -488,6 +499,7 @@ def answer_question(data):
 
     if all_answered:
         finish_round(code)
+QUESTIONS = load_questions_from_google()
 def finish_round(code):
     if code not in rooms:
         return
