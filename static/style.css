@@ -2,14 +2,21 @@
     box-sizing: border-box;
 }
 
+
 body {
     margin: 0;
 
     font-family:
         Arial,
+        Helvetica,
         sans-serif;
 
     background:
+        radial-gradient(
+            circle at top left,
+            #312e81,
+            transparent 35%
+        ),
         linear-gradient(
             135deg,
             #111827,
@@ -23,9 +30,12 @@ body {
 }
 
 
+/* =====================================================
+   TRANG CHỦ
+===================================================== */
+
 .container {
     width: 90%;
-
     max-width: 1000px;
 
     margin: auto;
@@ -37,18 +47,27 @@ body {
 .hero {
     text-align: center;
 
-    margin-bottom: 40px;
+    margin-bottom: 45px;
 }
 
 
-.hero h1 {
-    font-size: 48px;
+.logo {
+    font-size: 60px;
 
     margin-bottom: 10px;
 }
 
 
-.hero p {
+.hero h1,
+.settings-header h1 {
+    font-size: 48px;
+
+    margin: 5px 0 10px;
+}
+
+
+.hero p,
+.settings-header p {
     color: #cbd5e1;
 
     font-size: 18px;
@@ -67,36 +86,63 @@ body {
 
 .card {
     background:
-        rgba(255, 255, 255, 0.08);
+        rgba(255,255,255,0.08);
 
     border:
         1px solid
-        rgba(255,255,255,0.1);
+        rgba(255,255,255,0.12);
 
-    padding: 30px;
+    padding: 32px;
 
-    border-radius: 20px;
+    border-radius: 22px;
 
-    backdrop-filter: blur(10px);
+    backdrop-filter:
+        blur(12px);
 
     box-shadow:
-        0 15px 40px
+        0 20px 50px
         rgba(0,0,0,0.3);
+
+    transition:
+        transform 0.2s,
+        border-color 0.2s;
+}
+
+
+.card:hover {
+    transform:
+        translateY(-5px);
+
+    border-color:
+        rgba(129,140,248,0.7);
+}
+
+
+.card-icon {
+    font-size: 45px;
 }
 
 
 .card h2 {
-    margin-top: 0;
+    margin:
+        12px 0;
 }
 
 
-input {
+.card p {
+    color: #cbd5e1;
+
+    min-height: 45px;
+}
+
+
+input,
+select {
     width: 100%;
 
     padding: 14px;
 
-    margin:
-        8px 0;
+    margin: 7px 0;
 
     border-radius: 10px;
 
@@ -108,7 +154,8 @@ input {
 }
 
 
-button {
+button,
+.button-link {
     width: 100%;
 
     padding: 14px;
@@ -117,7 +164,8 @@ button {
 
     border-radius: 10px;
 
-    background: #6366f1;
+    background:
+        #6366f1;
 
     color: white;
 
@@ -128,13 +176,161 @@ button {
     cursor: pointer;
 
     margin-top: 8px;
+
+    text-align: center;
+
+    text-decoration: none;
+
+    display: inline-block;
+
+    transition:
+        0.2s;
 }
 
 
-button:hover {
-    opacity: 0.85;
+button:hover,
+.button-link:hover {
+    opacity: 0.88;
+
+    transform:
+        translateY(-1px);
 }
 
+
+.footer {
+    text-align: center;
+
+    margin-top: 35px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+
+/* =====================================================
+   TRANG CÀI ĐẶT
+===================================================== */
+
+.create-container {
+    max-width: 700px;
+}
+
+
+.settings-header {
+    text-align: center;
+
+    margin-bottom: 30px;
+}
+
+
+.settings-card {
+    background:
+        rgba(255,255,255,0.08);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.12);
+
+    padding: 30px;
+
+    border-radius: 22px;
+
+    backdrop-filter:
+        blur(12px);
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,0.3);
+}
+
+
+.setting-group {
+    margin-bottom: 22px;
+}
+
+
+.setting-group label {
+    display: block;
+
+    font-weight: bold;
+
+    margin-bottom: 7px;
+}
+
+
+.setting-group small {
+    display: block;
+
+    color: #94a3b8;
+
+    margin-top: 4px;
+}
+
+
+.info-box {
+    padding: 18px;
+
+    border-radius: 14px;
+
+    background:
+        rgba(99,102,241,0.15);
+
+    border:
+        1px solid
+        rgba(129,140,248,0.25);
+
+    margin:
+        25px 0;
+}
+
+
+.info-box p {
+    margin: 8px 0;
+
+    color: #cbd5e1;
+}
+
+
+.settings-actions {
+    display: grid;
+
+    grid-template-columns:
+        1fr 2fr;
+
+    gap: 10px;
+
+    margin-top: 25px;
+}
+
+
+.back-button {
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,0.1);
+
+    color: white;
+
+    text-decoration: none;
+}
+
+
+.create-button {
+    background:
+        #22c55e;
+}
+
+
+/* =====================================================
+   PHÒNG GAME
+===================================================== */
 
 .game-container {
     width: 95%;
@@ -155,23 +351,71 @@ button:hover {
 
     align-items: center;
 
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 
-.game-header h1 {
-    margin: 0;
+.room-title {
+    font-size: 28px;
+
+    font-weight: bold;
 }
 
 
-.game-header strong {
-    background: #6366f1;
+.room-code {
+    margin-top: 8px;
 
-    padding: 8px 14px;
+    color: #cbd5e1;
+}
+
+
+.room-code strong {
+    background:
+        #6366f1;
+
+    padding:
+        7px 14px;
 
     border-radius: 8px;
 
     letter-spacing: 2px;
+
+    margin-left: 5px;
+}
+
+
+.connection {
+    padding:
+        8px 14px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(255,255,255,0.08);
+}
+
+
+.room-settings {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+.room-settings span {
+    padding:
+        8px 12px;
+
+    background:
+        rgba(255,255,255,0.08);
+
+    border-radius: 10px;
+
+    color: #cbd5e1;
 }
 
 
@@ -197,6 +441,23 @@ button:hover {
     border:
         1px solid
         rgba(255,255,255,0.1);
+
+    backdrop-filter:
+        blur(10px);
+}
+
+
+.section-title {
+    font-size: 26px;
+
+    font-weight: bold;
+
+    margin-bottom: 10px;
+}
+
+
+.muted {
+    color: #94a3b8;
 }
 
 
@@ -222,6 +483,24 @@ button:hover {
 
     justify-content:
         space-between;
+
+    align-items: center;
+}
+
+
+.player-name {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.player-stat {
+    color: #94a3b8;
+
+    font-size: 13px;
 }
 
 
@@ -230,8 +509,24 @@ button:hover {
 }
 
 
+.host-notice {
+    padding: 12px;
+
+    border-radius: 10px;
+
+    background:
+        rgba(250,204,21,0.1);
+
+    color:
+        #facc15;
+
+    margin-bottom: 10px;
+}
+
+
 .start-button {
-    background: #22c55e;
+    background:
+        #22c55e;
 
     max-width: 300px;
 }
@@ -252,7 +547,7 @@ button:hover {
 
 
 #timer {
-    font-size: 32px;
+    font-size: 34px;
 
     color: #facc15;
 }
@@ -279,10 +574,18 @@ button:hover {
 
     height: 100%;
 
-    background: #22c55e;
+    background:
+        #22c55e;
 
     transition:
         width 0.1s linear;
+}
+
+
+#question {
+    line-height: 1.5;
+
+    margin-bottom: 25px;
 }
 
 
@@ -297,7 +600,7 @@ button:hover {
 
 
 .option {
-    padding: 25px;
+    padding: 22px;
 
     border-radius: 15px;
 
@@ -310,12 +613,16 @@ button:hover {
         2px solid
         transparent;
 
-    transition: 0.2s;
+    transition:
+        0.2s;
+
+    text-align: left;
 }
 
 
 .option:hover {
-    border-color: #6366f1;
+    border-color:
+        #6366f1;
 
     transform:
         translateY(-2px);
@@ -326,6 +633,42 @@ button:hover {
     pointer-events: none;
 
     opacity: 0.5;
+}
+
+
+.answer-status {
+    min-height: 30px;
+
+    margin-top: 20px;
+
+    font-size: 18px;
+
+    font-weight: bold;
+}
+
+
+.correct-answer {
+    padding: 18px;
+
+    background:
+        rgba(34,197,94,0.12);
+
+    border:
+        1px solid
+        rgba(34,197,94,0.3);
+
+    border-radius: 12px;
+
+    margin:
+        15px 0;
+}
+
+
+.final-message {
+    color: #cbd5e1;
+
+    margin:
+        10px 0 20px;
 }
 
 
@@ -340,6 +683,8 @@ button:hover {
     justify-content:
         space-between;
 
+    align-items: center;
+
     padding: 15px;
 
     margin-bottom: 8px;
@@ -348,6 +693,31 @@ button:hover {
 
     background:
         rgba(255,255,255,0.08);
+}
+
+
+.rank-main {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+.rank-stats {
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+.chat h2 {
+    margin-top: 0;
 }
 
 
@@ -361,18 +731,22 @@ button:hover {
 
 
 .message {
-    padding: 8px;
+    padding: 9px;
 
     border-bottom:
         1px solid
         rgba(255,255,255,0.05);
+
+    overflow-wrap:
+        anywhere;
 }
 
 
 .message-name {
     font-weight: bold;
 
-    color: #a5b4fc;
+    color:
+        #a5b4fc;
 }
 
 
@@ -395,26 +769,58 @@ button:hover {
 }
 
 
+/* =====================================================
+   MOBILE
+===================================================== */
+
 @media (max-width: 800px) {
 
     .cards {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
+
 
     .game-layout {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
+
 
     .options {
-        grid-template-columns: 1fr;
+        grid-template-columns:
+            1fr;
     }
 
+
     .game-header {
-        flex-direction: column;
+        flex-direction:
+            column;
 
-        align-items: flex-start;
+        align-items:
+            flex-start;
 
-        gap: 15px;
+        gap: 12px;
+    }
+
+
+    .room-settings {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+    }
+
+
+    .settings-actions {
+        grid-template-columns:
+            1fr;
+    }
+
+
+    .hero h1,
+    .settings-header h1 {
+        font-size: 36px;
     }
 
 }
