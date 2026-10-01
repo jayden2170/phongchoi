@@ -1,17 +1,14 @@
 const socket = io();
 
-
 const body = document.body;
-
 
 const code = body.dataset.code;
 
 const playerName = body.dataset.player;
 
 
-
 // =====================================================
-// CÁC ELEMENT
+// ELEMENT
 // =====================================================
 
 const connection =
@@ -19,6 +16,9 @@ const connection =
 
 const players =
     document.getElementById("players");
+
+const playerCount =
+    document.getElementById("playerCount");
 
 const startButton =
     document.getElementById("startButton");
@@ -50,20 +50,26 @@ const answerStatus =
 const roundResult =
     document.getElementById("roundResult");
 
-const correctAnswer =
-    document.getElementById("correctAnswer");
+const roundAnswerBox =
+    document.getElementById("roundAnswerBox");
 
 const roundLeaderboard =
-    document.getElementById("roundLeaderboard");
+    document.getElementById(
+        "roundLeaderboard"
+    );
 
 const gameOver =
     document.getElementById("gameOver");
 
 const finalLeaderboard =
-    document.getElementById("finalLeaderboard");
+    document.getElementById(
+        "finalLeaderboard"
+    );
 
 const restartButton =
-    document.getElementById("restartButton");
+    document.getElementById(
+        "restartButton"
+    );
 
 const chatForm =
     document.getElementById("chatForm");
@@ -75,45 +81,47 @@ const messages =
     document.getElementById("messages");
 
 
-
-let currentQuestion = null;
-
 let timerInterval = null;
 
+let hasAnswered = false;
 
 
 // =====================================================
-// KẾT NỐI SERVER
+// KẾT NỐI
 // =====================================================
 
-socket.on("connect", () => {
+socket.on(
+    "connect",
+    () => {
 
-    connection.innerText =
-        "🟢 Đã kết nối";
+        connection.innerText =
+            "🟢 Đã kết nối";
 
-    socket.emit(
-        "join_room",
-        {
-            code: code,
-            name: playerName
-        }
-    );
+        socket.emit(
+            "join_room",
+            {
+                code: code,
+                name: playerName
+            }
+        );
 
-});
+    }
+);
 
 
+socket.on(
+    "disconnect",
+    () => {
 
-socket.on("disconnect", () => {
+        connection.innerText =
+            "🔴 Mất kết nối";
 
-    connection.innerText =
-        "🔴 Mất kết nối";
-
-});
-
+    }
+);
 
 
 // =====================================================
-// CẬP NHẬT PHÒNG
+// PHÒNG
 // =====================================================
 
 socket.on(
@@ -123,54 +131,92 @@ socket.on(
         players.innerHTML = "";
 
 
+        playerCount.innerText =
+            `${data.players.length}/${data.max_players}`;
+
+
         data.players.forEach(
             (player, index) => {
 
                 const div =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
                 div.className =
                     "player";
 
 
-                let hostText = "";
+                const left =
+                    document.createElement(
+                        "div"
+                    );
+
+                left.className =
+                    "player-left";
+
+
+                const name =
+                    document.createElement(
+                        "span"
+                    );
+
+                name.innerText =
+                    `${index + 1}. ${player.name}`;
+
 
                 if (player.host) {
 
-                    hostText =
+                    const host =
+                        document.createElement(
+                            "span"
+                        );
+
+                    host.className =
+                        "host";
+
+                    host.innerText =
                         " 👑 Chủ phòng";
+
+                    name.appendChild(
+                        host
+                    );
 
                 }
 
 
-                div.innerHTML = `
-
-                    <span>
-
-                        ${index + 1}.
-                        ${escapeHtml(player.name)}
-
-                        <span class="host">
-                            ${hostText}
-                        </span>
-
-                    </span>
-
-                    <strong>
-                        ${player.score}
-                    </strong>
-
-                `;
+                left.appendChild(
+                    name
+                );
 
 
-                players.appendChild(div);
+                const score =
+                    document.createElement(
+                        "strong"
+                    );
+
+                score.innerText =
+                    `${player.score} điểm`;
+
+
+                div.appendChild(
+                    left
+                );
+
+                div.appendChild(
+                    score
+                );
+
+
+                players.appendChild(
+                    div
+                );
 
             }
         );
 
 
-        // Hiện nút bắt đầu cho chủ phòng
-
+        // Chủ phòng được bắt đầu.
         if (
             socket.id === data.host_sid &&
             data.state === "waiting"
@@ -188,8 +234,7 @@ socket.on(
         }
 
 
-        // Hiện nút chơi lại
-
+        // Chủ phòng được chơi lại.
         if (
             socket.id === data.host_sid &&
             data.state === "finished"
@@ -199,14 +244,19 @@ socket.on(
                 "block";
 
         }
+        else {
+
+            restartButton.style.display =
+                "none";
+
+        }
 
     }
 );
 
 
-
 // =====================================================
-// BẮT ĐẦU GAME
+// BẮT ĐẦU
 // =====================================================
 
 startButton.addEventListener(
@@ -224,7 +274,6 @@ startButton.addEventListener(
 );
 
 
-
 // =====================================================
 // NHẬN CÂU HỎI
 // =====================================================
@@ -232,6 +281,14 @@ startButton.addEventListener(
 socket.on(
     "game_question",
     (data) => {
+
+        clearInterval(
+            timerInterval
+        );
+
+
+        hasAnswered = false;
+
 
         lobby.style.display =
             "none";
@@ -246,9 +303,6 @@ socket.on(
             "block";
 
 
-        currentQuestion = data;
-
-
         questionNumber.innerText =
             `Câu ${data.question_number}/${data.total_questions}`;
 
@@ -257,47 +311,60 @@ socket.on(
             data.question;
 
 
-        answerStatus.innerText = "";
+        answerStatus.innerText =
+            "";
 
 
-        options.innerHTML = "";
+        options.innerHTML =
+            "";
 
 
         data.options.forEach(
             (option, index) => {
 
                 const button =
-                    document.createElement("button");
+                    document.createElement(
+                        "button"
+                    );
 
                 button.className =
                     "option";
 
+                button.type =
+                    "button";
 
                 button.innerText =
-                    `${String.fromCharCode(65 + index)}. ${option}`;
+                    `${String.fromCharCode(
+                        65 + index
+                    )}. ${option}`;
 
 
                 button.addEventListener(
                     "click",
                     () => {
 
-                        sendAnswer(index);
+                        sendAnswer(
+                            index
+                        );
 
                     }
                 );
 
 
-                options.appendChild(button);
+                options.appendChild(
+                    button
+                );
 
             }
         );
 
 
-        startTimer(data.time);
+        startTimer(
+            data.time
+        );
 
     }
 );
-
 
 
 // =====================================================
@@ -305,6 +372,14 @@ socket.on(
 // =====================================================
 
 function sendAnswer(answer) {
+
+    if (hasAnswered) {
+        return;
+    }
+
+
+    hasAnswered = true;
+
 
     socket.emit(
         "answer",
@@ -334,6 +409,9 @@ function sendAnswer(answer) {
 }
 
 
+// =====================================================
+// KẾT QUẢ TRẢ LỜI
+// =====================================================
 
 socket.on(
     "answer_received",
@@ -356,22 +434,22 @@ socket.on(
 );
 
 
-
 // =====================================================
 // TIMER
 // =====================================================
 
 function startTimer(seconds) {
 
-    clearInterval(timerInterval);
+    clearInterval(
+        timerInterval
+    );
 
 
-    let remaining =
-        seconds;
+    let remaining = seconds;
 
 
     timer.innerText =
-        remaining;
+        Math.ceil(remaining);
 
 
     timerBar.style.width =
@@ -387,8 +465,10 @@ function startTimer(seconds) {
             () => {
 
                 const elapsed =
-                    (Date.now() - start)
-                    / 1000;
+                    (
+                        Date.now()
+                        - start
+                    ) / 1000;
 
 
                 remaining =
@@ -399,14 +479,20 @@ function startTimer(seconds) {
 
 
                 timer.innerText =
-                    Math.ceil(remaining);
+                    Math.ceil(
+                        remaining
+                    );
 
 
                 timerBar.style.width =
-                    `${remaining / seconds * 100}%`;
+                    `${(
+                        remaining / seconds
+                    ) * 100}%`;
 
 
-                if (remaining <= 0) {
+                if (
+                    remaining <= 0
+                ) {
 
                     clearInterval(
                         timerInterval
@@ -419,7 +505,6 @@ function startTimer(seconds) {
         );
 
 }
-
 
 
 // =====================================================
@@ -446,8 +531,23 @@ socket.on(
             ["A", "B", "C", "D"];
 
 
-        correctAnswer.innerText =
-            `Đáp án đúng: ${letters[data.correct]}`;
+        roundAnswerBox.innerHTML =
+            `
+            <div>
+                <strong>Câu hỏi:</strong>
+                ${escapeHtml(data.question)}
+            </div>
+
+            <br>
+
+            <div class="correct-answer">
+                ✅ Đáp án đúng:
+                ${letters[data.correct]}.
+                ${escapeHtml(
+                    data.options[data.correct]
+                )}
+            </div>
+            `;
 
 
         showLeaderboard(
@@ -459,19 +559,26 @@ socket.on(
 );
 
 
-
 // =====================================================
-// KẾT THÚC GAME
+// GAME OVER
 // =====================================================
 
 socket.on(
     "game_over",
     (data) => {
 
+        clearInterval(
+            timerInterval
+        );
+
+
         game.style.display =
             "none";
 
         roundResult.style.display =
+            "none";
+
+        lobby.style.display =
             "none";
 
         gameOver.style.display =
@@ -487,7 +594,6 @@ socket.on(
 );
 
 
-
 // =====================================================
 // LEADERBOARD
 // =====================================================
@@ -497,40 +603,102 @@ function showLeaderboard(
     playerList
 ) {
 
-    element.innerHTML = "";
+    element.innerHTML =
+        "";
 
 
     playerList.forEach(
         (player, index) => {
 
             const div =
-                document.createElement("div");
+                document.createElement(
+                    "div"
+                );
 
             div.className =
                 "rank";
 
 
-            div.innerHTML = `
+            const rank =
+                document.createElement(
+                    "strong"
+                );
 
-                <span>
-                    #${index + 1}
-                    ${escapeHtml(player.name)}
-                </span>
-
-                <strong>
-                    ${player.score} điểm
-                </strong>
-
-            `;
+            rank.innerText =
+                `#${index + 1}`;
 
 
-            element.appendChild(div);
+            const info =
+                document.createElement(
+                    "div"
+                );
+
+            const name =
+                document.createElement(
+                    "div"
+                );
+
+            name.innerText =
+                player.name;
+
+
+            const stats =
+                document.createElement(
+                    "div"
+                );
+
+            stats.className =
+                "rank-stats";
+
+
+            stats.innerText =
+                `✅ ${player.correct} đúng  |  ` +
+                `❌ ${player.wrong} sai  |  ` +
+                `⏱️ ${player.unanswered} chưa trả lời`;
+
+
+            info.appendChild(
+                name
+            );
+
+            info.appendChild(
+                stats
+            );
+
+
+            const score =
+                document.createElement(
+                    "div"
+                );
+
+            score.className =
+                "rank-score";
+
+            score.innerHTML =
+                `<strong>${player.score} điểm</strong>`;
+
+
+            div.appendChild(
+                rank
+            );
+
+            div.appendChild(
+                info
+            );
+
+            div.appendChild(
+                score
+            );
+
+
+            element.appendChild(
+                div
+            );
 
         }
     );
 
 }
-
 
 
 // =====================================================
@@ -549,9 +717,7 @@ chatForm.addEventListener(
 
 
         if (!message) {
-
             return;
-
         }
 
 
@@ -564,11 +730,11 @@ chatForm.addEventListener(
         );
 
 
-        chatInput.value = "";
+        chatInput.value =
+            "";
 
     }
 );
-
 
 
 socket.on(
@@ -576,24 +742,47 @@ socket.on(
     (data) => {
 
         const div =
-            document.createElement("div");
+            document.createElement(
+                "div"
+            );
 
         div.className =
             "message";
 
 
-        div.innerHTML = `
+        const name =
+            document.createElement(
+                "span"
+            );
 
-            <span class="message-name">
-                ${escapeHtml(data.name)}:
-            </span>
+        name.className =
+            "message-name";
 
-            ${escapeHtml(data.message)}
-
-        `;
+        name.innerText =
+            `${data.name}: `;
 
 
-        messages.appendChild(div);
+        const message =
+            document.createElement(
+                "span"
+            );
+
+        message.innerText =
+            data.message;
+
+
+        div.appendChild(
+            name
+        );
+
+        div.appendChild(
+            message
+        );
+
+
+        messages.appendChild(
+            div
+        );
 
 
         messages.scrollTop =
@@ -601,7 +790,6 @@ socket.on(
 
     }
 );
-
 
 
 // =====================================================
@@ -619,6 +807,7 @@ restartButton.addEventListener(
             }
         );
 
+
         gameOver.style.display =
             "none";
 
@@ -629,7 +818,6 @@ restartButton.addEventListener(
 );
 
 
-
 // =====================================================
 // ERROR
 // =====================================================
@@ -638,21 +826,24 @@ socket.on(
     "error_message",
     (data) => {
 
-        alert(data.message);
+        alert(
+            data.message
+        );
 
     }
 );
 
 
-
 // =====================================================
-// CHỐNG HTML ĐỘC
+// CHỐNG HTML
 // =====================================================
 
 function escapeHtml(text) {
 
     const div =
-        document.createElement("div");
+        document.createElement(
+            "div"
+        );
 
     div.textContent =
         text;
