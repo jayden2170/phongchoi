@@ -10,7 +10,9 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Phòng {{ code }}</title>
+    <title>
+        Phòng {{ code }} - Quiz Battle
+    </title>
 
     <link
         rel="stylesheet"
@@ -35,14 +37,28 @@
 
         <div>
 
-            <h1>🎮 PHÒNG CHƠI</h1>
+            <h1>
+                🎮 QUIZ BATTLE
+            </h1>
 
-            <span>
-                Mã phòng:
-                <strong>{{ code }}</strong>
-            </span>
+            <div class="room-info">
+
+                <span>
+                    Mã phòng:
+                </span>
+
+                <strong>
+                    {{ code }}
+                </strong>
+
+                <span class="subject-badge">
+                    📚 {{ subject }}
+                </span>
+
+            </div>
 
         </div>
+
 
         <div id="connection">
             🟡 Đang kết nối...
@@ -51,11 +67,10 @@
     </header>
 
 
-
     <main class="game-layout">
 
 
-        <!-- KHU VỰC GAME -->
+        <!-- GAME -->
 
         <section class="main-game">
 
@@ -64,16 +79,63 @@
 
             <div id="lobby">
 
-                <h2>👥 Phòng chờ</h2>
+                <div class="section-title">
+
+                    <h2>
+                        👥 Phòng chờ
+                    </h2>
+
+                    <span
+                        id="playerCount"
+                        class="badge"
+                    >
+                        0/{{ max_players }}
+                    </span>
+
+                </div>
+
+
+                <div class="room-settings-summary">
+
+                    <div>
+                        📚
+                        <strong>
+                            {{ subject }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        📝
+                        {{ question_count }}
+                        câu
+                    </div>
+
+                    <div>
+                        ⏱️
+                        {{ question_time }}
+                        giây/câu
+                    </div>
+
+                    <div>
+                        👥
+                        tối đa
+                        {{ max_players }}
+                        người
+                    </div>
+
+                </div>
+
 
                 <p>
                     Người chơi trong phòng:
                 </p>
 
+
                 <div
                     id="players"
                     class="players"
                 ></div>
+
 
                 <button
                     id="startButton"
@@ -86,7 +148,6 @@
             </div>
 
 
-
             <!-- GAME -->
 
             <div
@@ -97,7 +158,7 @@
                 <div class="question-info">
 
                     <span id="questionNumber">
-                        Câu 1/5
+                        Câu 1/10
                     </span>
 
                     <span id="timer">
@@ -117,9 +178,13 @@
                 </div>
 
 
-                <h2 id="question">
-                    Câu hỏi
-                </h2>
+                <div class="question-card">
+
+                    <h2 id="question">
+                        Câu hỏi
+                    </h2>
+
+                </div>
 
 
                 <div
@@ -128,10 +193,12 @@
                 ></div>
 
 
-                <div id="answerStatus"></div>
+                <div
+                    id="answerStatus"
+                    class="answer-status"
+                ></div>
 
             </div>
-
 
 
             <!-- KẾT QUẢ VÒNG -->
@@ -141,11 +208,20 @@
                 style="display:none;"
             >
 
+                <div class="result-icon">
+                    📊
+                </div>
+
                 <h2>
-                    📊 Kết quả vòng
+                    Kết quả câu hỏi
                 </h2>
 
-                <p id="correctAnswer"></p>
+
+                <div
+                    id="roundAnswerBox"
+                    class="answer-box"
+                ></div>
+
 
                 <div
                     id="roundLeaderboard"
@@ -155,17 +231,26 @@
             </div>
 
 
-
-            <!-- KẾT THÚC GAME -->
+            <!-- KẾT THÚC -->
 
             <div
                 id="gameOver"
                 style="display:none;"
             >
 
+                <div class="result-icon">
+                    🏆
+                </div>
+
                 <h2>
-                    🏆 GAME KẾT THÚC
+                    GAME KẾT THÚC
                 </h2>
+
+
+                <p>
+                    Tổng kết kết quả
+                </p>
+
 
                 <div
                     id="finalLeaderboard"
@@ -186,12 +271,13 @@
         </section>
 
 
-
         <!-- CHAT -->
 
         <aside class="chat">
 
-            <h2>💬 Chat</h2>
+            <h2>
+                💬 Chat
+            </h2>
 
 
             <div
@@ -207,6 +293,7 @@
                     id="chatInput"
                     placeholder="Nhập tin nhắn..."
                     maxlength="200"
+                    autocomplete="off"
                 >
 
                 <button type="submit">
