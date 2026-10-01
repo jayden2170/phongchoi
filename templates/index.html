@@ -10,7 +10,7 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title>Phòng Chơi - Quiz Battle</title>
+    <title>Quiz Battle</title>
 
     <link
         rel="stylesheet"
@@ -21,96 +21,114 @@
 
 <body>
 
-    <div class="container">
+<div class="container">
 
-        <div class="hero">
+    <div class="hero">
 
-            <h1>🎮 PHÒNG CHƠI</h1>
+        <div class="hero-icon">
+            🎮
+        </div>
+
+        <h1>QUIZ BATTLE</h1>
+
+        <p>
+            Đấu trí cùng bạn bè
+        </p>
+
+    </div>
+
+
+    <div class="cards">
+
+        <!-- TẠO PHÒNG -->
+
+        <div class="card">
+
+            <div class="card-icon">
+                🏠
+            </div>
+
+            <h2>
+                Tạo phòng
+            </h2>
 
             <p>
-                Quiz Battle - Đấu trí cùng bạn bè
+                Tạo một phòng mới
+                và mời bạn bè cùng chơi.
             </p>
+
+            <form
+                action="/create"
+                method="POST"
+            >
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Tên của bạn"
+                    maxlength="20"
+                    required
+                >
+
+                <button type="submit">
+                    🚀 Tạo phòng
+                </button>
+
+            </form>
 
         </div>
 
 
-        <div class="cards">
+        <!-- VÀO PHÒNG -->
 
+        <div class="card">
 
-            <!-- TẠO PHÒNG -->
-
-            <div class="card">
-
-                <h2>🏠 Tạo phòng</h2>
-
-                <p>
-                    Tạo một phòng mới và mời bạn bè.
-                </p>
-
-                <form
-                    action="/create"
-                    method="POST"
-                >
-
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Tên của bạn"
-                        maxlength="20"
-                        required
-                    >
-
-                    <button type="submit">
-                        Tạo phòng
-                    </button>
-
-                </form>
-
+            <div class="card-icon">
+                🚪
             </div>
 
+            <h2>
+                Vào phòng
+            </h2>
 
-            <!-- VÀO PHÒNG -->
+            <p>
+                Nhập mã phòng để
+                tham gia cùng bạn bè.
+            </p>
 
-            <div class="card">
+            <form
+                action="/join"
+                method="POST"
+            >
 
-                <h2>🚪 Vào phòng</h2>
-
-                <p>
-                    Nhập mã phòng để tham gia.
-                </p>
-
-                <form
-                    action="/join"
-                    method="POST"
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Tên của bạn"
+                    maxlength="20"
+                    required
                 >
 
-                    <input
-                        type="text"
-                        name="name"
-                        placeholder="Tên của bạn"
-                        maxlength="20"
-                        required
-                    >
+                <input
+                    type="text"
+                    name="code"
+                    placeholder="Mã phòng"
+                    maxlength="6"
+                    required
+                    style="text-transform: uppercase;"
+                >
 
-                    <input
-                        type="text"
-                        name="code"
-                        placeholder="Mã phòng"
-                        maxlength="6"
-                        required
-                    >
+                <button type="submit">
+                    🎯 Vào phòng
+                </button>
 
-                    <button type="submit">
-                        Vào phòng
-                    </button>
-
-                </form>
-
-            </div>
+            </form>
 
         </div>
 
     </div>
+
+</div>
 
 </body>
 
